@@ -19,6 +19,37 @@ void ofxEtherdream::setup(bool bStartThread, int idEtherdream) {
     if(bStartThread) start();
 }
 
+//--------------------------------------------------------------
+void ofxEtherdream::setupByDacId(unsigned long dacIdEtherdream, bool bStartThread) {
+    
+    idEtherdreamConnection = 0;
+    
+    etherdream_lib_start();
+    
+    setPPS(30000);
+    setWaitBeforeSend(false);
+    
+    /* Sleep for a bit over a second, to ensure that we see broadcasts
+     * from all available DACs. */
+    usleep(1000000);
+
+    {
+        int device_num = etherdream_dac_count();
+        if (!device_num) {
+            ofLogWarning() << "ofxEtherdream::init - No DACs found";
+            return 0;
+        }
+        device = etherdream_get(dacIdEtherdream);
+        ofLogNotice() << "ofxEtherdream::init - Connecting...";
+        if (etherdream_connect(device) < 0) return 1;
+        
+        ofLogNotice() << "ofxEtherdream::init - done with dac id : " << dacIdEtherdream;
+        state = ETHERDREAM_FOUND;
+    }
+    
+    if(bStartThread) start();
+}
+
 
 //--------------------------------------------------------------
 bool ofxEtherdream::stateIsFound() {
