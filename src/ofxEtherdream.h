@@ -24,6 +24,7 @@ public:
     
     void kill() {
         clear();
+        ofSleepMillis(200);
         stop();
         if(stateIsFound()) {
             etherdream_stop(device);

@@ -239,13 +239,22 @@ static int dac_connect(struct etherdream *d) {
 	}
 
 	// Wait for connection to go through
-	int res = wait_for_fd_activity(d, DEFAULT_TIMEOUT, 1);
-	if (res < 0)
-		goto bail;
-	if (res == 0) {
-		trace(d, "Connection to %s timed out.\n", inet_ntoa(d->addr));
-		goto bail;
-	}
+    int retry_count = 3;
+    int retry_i=0;
+    for (retry_i=0; retry_i<retry_count; ++retry_i) {
+        int res = wait_for_fd_activity(d, DEFAULT_TIMEOUT, 1);
+        if (res < 0)
+            goto bail;
+        if (res == 0) {
+            trace(d, "Connection to %s timed out.\n", inet_ntoa(d->addr));
+            if (retry_i == retry_count-1) {
+                goto bail;
+            }
+        } else {
+            break;
+        }
+    }
+    int res = 0;
 
 	// See if we have *actually* connected
 	int error;
