@@ -210,6 +210,8 @@ int ofxEtherdream::getPPS() const {
 
 vector<unsigned long> ofxEtherdream::listDevices()
 {
+    etherdream_lib_start();
+    ofSleepMillis(1000);
     int device_num = etherdream_dac_count();
 
     vector<unsigned long> dac_ids;
