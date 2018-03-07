@@ -58,6 +58,7 @@ public:
     void setWaitBeforeSend(bool b);
     bool getWaitBeforeSend() const;
     
+    static vector<unsigned long> listDevices();
 private:
     void init();
     

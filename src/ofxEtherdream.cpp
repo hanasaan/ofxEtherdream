@@ -206,3 +206,18 @@ void ofxEtherdream::setPPS(int i) {
 int ofxEtherdream::getPPS() const {
     return pps;
 }
+
+
+vector<unsigned long> ofxEtherdream::listDevices()
+{
+    int device_num = etherdream_dac_count();
+
+    vector<unsigned long> dac_ids;
+    for (int i=0; i<device_num; i++) {
+        ofLogNotice() << "ofxEtherdream::init - " << i << " Ether Dream " << etherdream_get_id(etherdream_get(i));
+        dac_ids.push_back(etherdream_get_id(etherdream_get(i)));
+    }
+    std::sort(dac_ids.begin(),dac_ids.end());
+
+    return dac_ids;
+}
