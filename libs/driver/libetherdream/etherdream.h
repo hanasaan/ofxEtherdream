@@ -6,8 +6,7 @@ extern "C" {
 #endif
 
 #include <stdint.h>
-#include <protocol.h>
-    
+
 #define _POSIX_C_SOURCE 199309L
 #define _DARWIN_C_SOURCE 1
     
@@ -30,17 +29,8 @@ extern "C" {
 #include <mach/mach.h>
 #include <mach/mach_time.h>
 #endif
-
-struct etherdream_point {
-	int16_t x;
-	int16_t y;
-	uint16_t r;
-	uint16_t g;
-	uint16_t b;
-	uint16_t i;
-	uint16_t u1;
-	uint16_t u2;
-};
+    
+#include <protocol.h>
 
     
 #define BUFFER_POINTS_PER_FRAME 16000
@@ -49,7 +39,6 @@ struct etherdream_point {
 #define MIN_SEND_POINTS		40
 #define DEFAULT_TIMEOUT		2000000
 #define DEBUG_THRESHOLD_POINTS	800
-
     
     struct etherdream_conn {
         int dc_sock;
@@ -110,7 +99,20 @@ struct etherdream_point {
         
         struct etherdream * next;
     };
+
     
+    
+struct etherdream_point {
+	int16_t x;
+	int16_t y;
+	uint16_t r;
+	uint16_t g;
+	uint16_t b;
+	uint16_t i;
+	uint16_t u1;
+	uint16_t u2;
+};
+
 struct etherdream;
 
 /* etherdream_lib_start()
@@ -146,6 +148,13 @@ struct etherdream *etherdream_get(unsigned long idx);
  * connection to d has been established.
  */
 unsigned long etherdream_get_id(struct etherdream *d);
+
+/* etherdream_get_in_addr(d)
+ *
+ * Return the IP address of the given Ether Dream. Does not require that
+ * a connection to d has been established.
+ */
+const struct in_addr *etherdream_get_in_addr(struct etherdream *d);
 
 /* etherdream_connect(d)
  *
