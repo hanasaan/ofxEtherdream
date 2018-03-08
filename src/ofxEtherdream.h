@@ -14,7 +14,7 @@
 
 class ofxEtherdream : public ofThread {
 public:
-    ofxEtherdream():state(ETHERDREAM_NOTFOUND), bAutoConnect(false) {}
+    ofxEtherdream():state(ETHERDREAM_NOTFOUND), bAutoConnect(false), dacIdEtherdream(0) {}
     
     ~ofxEtherdream() {
         kill();
@@ -59,21 +59,32 @@ public:
     bool getWaitBeforeSend() const;
     
     static vector<unsigned long> listDevices();
+    
+    bool isAutoConnect() const { return bAutoConnect; }
+    void setAutoConnect(bool b) { bAutoConnect = b; }
 private:
     void init();
     
-private:
-    enum {
+public:
+    enum EtherDreamState {
         ETHERDREAM_NOTFOUND = 0,
-        ETHERDREAM_FOUND
-    } state;
+        ETHERDREAM_FOUND,
+        ETHERDREAM_FOUND_DISCONNECTED
+    };
     
+private:
+    EtherDreamState state;
     int pps;
     bool bWaitBeforeSend;
     bool bAutoConnect;
+    bool bSetupByDacId;
     
     struct etherdream *device;
     vector<ofxIlda::Point> points;
     
     int idEtherdreamConnection;
+    unsigned long dacIdEtherdream;
+public:
+    EtherDreamState getState() const { return state; }
+    string getStateString() const;
 };

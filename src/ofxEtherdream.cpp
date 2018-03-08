@@ -3,7 +3,9 @@
 //--------------------------------------------------------------
 void ofxEtherdream::setup(bool bStartThread, int idEtherdream) {
 
+    bSetupByDacId = false;
     idEtherdreamConnection = idEtherdream;
+    this->dacIdEtherdream = 0;
     
     etherdream_lib_start();
     
@@ -22,7 +24,9 @@ void ofxEtherdream::setup(bool bStartThread, int idEtherdream) {
 //--------------------------------------------------------------
 void ofxEtherdream::setupByDacId(unsigned long dacIdEtherdream, bool bStartThread) {
     
-    idEtherdreamConnection = 0;
+    bSetupByDacId = true;
+    idEtherdreamConnection = INT_MAX;
+    this->dacIdEtherdream = dacIdEtherdream;
     
     etherdream_lib_start();
     
@@ -39,6 +43,7 @@ void ofxEtherdream::setupByDacId(unsigned long dacIdEtherdream, bool bStartThrea
             ofLogWarning() << "ofxEtherdream::init - No DACs found";
             return 0;
         }
+        
         device = etherdream_get(dacIdEtherdream);
         if (device == NULL) return 1;
         ofLogNotice() << "ofxEtherdream::init - Connecting...";
@@ -63,9 +68,15 @@ bool ofxEtherdream::checkConnection(bool bForceReconnect) {
         
         if(bForceReconnect) {
             kill();
-            setup(true, idEtherdreamConnection);
+            if (bSetupByDacId) {
+                setupByDacId(dacIdEtherdream);
+            } else {
+                setup(true, idEtherdreamConnection);
+            }
         }
-        
+        if (state == ETHERDREAM_FOUND) {
+            state = ETHERDREAM_FOUND_DISCONNECTED;
+        }
         return false;
     }
     return true;
@@ -111,6 +122,17 @@ void ofxEtherdream::threadedFunction() {
                     unlock();
                 }
                 break;
+            case ETHERDREAM_FOUND_DISCONNECTED:
+                if(bAutoConnect) {
+                    clear();
+                    if (bSetupByDacId) {
+                        setupByDacId(dacIdEtherdream, false);
+                    } else {
+                        setup(false, idEtherdreamConnection);
+                    }
+                }
+                break;
+                
         }
         ofSleepMillis(1);
     }
@@ -206,6 +228,18 @@ void ofxEtherdream::setPPS(int i) {
 //--------------------------------------------------------------
 int ofxEtherdream::getPPS() const {
     return pps;
+}
+
+string ofxEtherdream::getStateString() const
+{
+    switch (state) {
+        case ETHERDREAM_NOTFOUND:
+            return "Not Found";
+        case ETHERDREAM_FOUND:
+            return "Found";
+        case ETHERDREAM_FOUND_DISCONNECTED:
+            return "Disconnected";
+    }
 }
 
 
