@@ -40,6 +40,7 @@ void ofxEtherdream::setupByDacId(unsigned long dacIdEtherdream, bool bStartThrea
             return 0;
         }
         device = etherdream_get(dacIdEtherdream);
+        if (device == NULL) return 1;
         ofLogNotice() << "ofxEtherdream::init - Connecting...";
         if (etherdream_connect(device) < 0) return 1;
         
