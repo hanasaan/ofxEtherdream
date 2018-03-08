@@ -75,7 +75,10 @@ bool ofxEtherdream::checkConnection(bool bForceReconnect) {
             }
         }
         if (state == ETHERDREAM_FOUND) {
-            state = ETHERDREAM_FOUND_DISCONNECTED;
+            if(lock()) {
+                state = ETHERDREAM_FOUND_DISCONNECTED;
+                unlock();
+            }
         }
         return false;
     }
@@ -191,9 +194,11 @@ void ofxEtherdream::addPoints(const ofxIlda::Frame &ildaFrame) {
 
 //--------------------------------------------------------------
 void ofxEtherdream::setPoints(const vector<ofxIlda::Point>& _points) {
-    if(lock()) {
-        points = _points;
-        unlock();
+    if (state == ETHERDREAM_FOUND) {
+        if(lock()) {
+            points = _points;
+            unlock();
+        }
     }
 }
 
