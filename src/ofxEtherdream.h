@@ -62,6 +62,10 @@ public:
     
     bool isAutoConnect() const { return bAutoConnect; }
     void setAutoConnect(bool b) { bAutoConnect = b; }
+    
+    void setSyncFunction(void (*sync_function_ptr)(void)) {
+        etherdream_set_sync_function_ptr(device, sync_function_ptr);
+    }
 private:
     void init();
     

@@ -412,6 +412,9 @@ static int dac_send_data(struct etherdream *d, struct dac_point *data,
 	    && !d->conn.dc_begin_sent) {
 		trace(d, "L: Sending begin command...\n");
 
+        if (d->sync_function_ptr) {
+            (*(d->sync_function_ptr))();
+        }
 		struct begin_command b = { .command = 'b', .point_rate = (uint32_t)rate,
 		                           .low_water_mark = 0 };
 		if ((res = send_all(d, (const char *)&b, sizeof b)) < 0)
@@ -827,7 +830,8 @@ static void *watch_for_dacs(void *arg) {
 		                | buf.mac_address[5];
 		new_dac->sw_revision = buf.sw_revision;
 		new_dac->state = ST_DISCONNECTED;
-
+        new_dac->sync_function_ptr = NULL;
+        
 		trace(NULL, "_: Found new DAC: %s\n", inet_ntoa(src.sin_addr));
 
 		pthread_mutex_lock(&dac_list_lock);
@@ -907,3 +911,11 @@ struct etherdream *etherdream_get(unsigned long idx) {
 
 	return NULL;
 }
+
+void etherdream_set_sync_function_ptr(struct etherdream *d, void (*sync_function_ptr)(void))
+{
+    pthread_mutex_lock(&d->mutex);
+    d->sync_function_ptr = sync_function_ptr;
+    pthread_mutex_unlock(&d->mutex);
+}
+

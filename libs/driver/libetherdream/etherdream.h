@@ -97,6 +97,8 @@ extern "C" {
         
         enum dac_state state;
         
+        void (*sync_function_ptr)(void);
+        
         struct etherdream * next;
     };
 
@@ -205,6 +207,8 @@ int etherdream_stop(struct etherdream *d);
  * Close the TCP connection to d.
  */
 void etherdream_disconnect(struct etherdream *d);
+
+void etherdream_set_sync_function_ptr(struct etherdream *d, void (*sync_function_ptr)(void));
 
 #ifdef __cplusplus
 } // extern "c"
