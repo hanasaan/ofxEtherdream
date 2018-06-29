@@ -14,7 +14,7 @@
 
 class ofxEtherdream : public ofThread {
 public:
-    ofxEtherdream():state(ETHERDREAM_NOTFOUND), bAutoConnect(false), dacIdEtherdream(0) {}
+    ofxEtherdream():state(ETHERDREAM_NOTFOUND), bAutoConnect(false), dacIdEtherdream(0), device(NULL) {}
     
     ~ofxEtherdream() {
         kill();
@@ -64,7 +64,9 @@ public:
     void setAutoConnect(bool b) { bAutoConnect = b; }
     
     void setSyncFunction(void (*sync_function_ptr)(void)) {
-        etherdream_set_sync_function_ptr(device, sync_function_ptr);
+        if (device && checkConnection(false)) {
+            etherdream_set_sync_function_ptr(device, sync_function_ptr);
+        }
     }
 private:
     void init();
