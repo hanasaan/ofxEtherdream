@@ -24,8 +24,10 @@ public:
     
     void kill() {
         clear();
-        ofSleepMillis(200);
-        stop();
+        if (isThreadRunning()) {
+            ofSleepMillis(200);
+            stop();
+        }
         if(stateIsFound()) {
             etherdream_stop(device);
             etherdream_disconnect(device);
