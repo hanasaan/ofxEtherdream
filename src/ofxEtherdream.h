@@ -95,4 +95,5 @@ private:
 public:
     EtherDreamState getState() const { return state; }
     string getStateString() const;
+    dac_status getDacStatus() const;
 };

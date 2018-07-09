@@ -263,3 +263,9 @@ vector<unsigned long> ofxEtherdream::listDevices()
 
     return dac_ids;
 }
+
+dac_status ofxEtherdream::getDacStatus() const
+{
+    return device->conn.resp.dac_status;
+}
+
