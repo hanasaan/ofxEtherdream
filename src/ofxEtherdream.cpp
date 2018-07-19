@@ -56,6 +56,20 @@ void ofxEtherdream::setupByDacId(unsigned long dacIdEtherdream, bool bStartThrea
     if(bStartThread) start();
 }
 
+void ofxEtherdream::resetup(bool bStartThread)
+{
+    if (device == NULL) {
+        return;
+    }
+    if (etherdream_connect(device) < 0) return 1;
+    
+    ofLogNotice() << "ofxEtherdream::init - done with dac id : " << dacIdEtherdream;
+    state = ETHERDREAM_FOUND;
+    
+    if(bStartThread) start();
+}
+
+
 
 //--------------------------------------------------------------
 bool ofxEtherdream::stateIsFound() {

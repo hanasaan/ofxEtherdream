@@ -36,6 +36,7 @@ public:
     
     void setup(bool bStartThread = true, int idEtherdream = 0);
     void setupByDacId(unsigned long dacIdEtherdream, bool bStartThread = true);
+    void resetup(bool bStartThread);
     virtual void threadedFunction();
     
     

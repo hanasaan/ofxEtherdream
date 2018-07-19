@@ -832,7 +832,7 @@ static void *watch_for_dacs(void *arg) {
 		new_dac->state = ST_DISCONNECTED;
         new_dac->sync_function_ptr = NULL;
         
-		trace(NULL, "_: Found new DAC: %s\n", inet_ntoa(src.sin_addr));
+        trace(NULL, "_: Found new DAC: %s : %d\n", inet_ntoa(src.sin_addr), new_dac->dac_id);
 
 		pthread_mutex_lock(&dac_list_lock);
 		new_dac->next = dac_list;
