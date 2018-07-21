@@ -22,7 +22,7 @@ void ofxEtherdream::setup(bool bStartThread, int idEtherdream) {
 }
 
 //--------------------------------------------------------------
-void ofxEtherdream::setupByDacId(unsigned long dacIdEtherdream, bool bStartThread) {
+void ofxEtherdream::setupByDacId(unsigned long dacIdEtherdream, bool bStartThread, bool bConnect) {
     
     bSetupByDacId = true;
     idEtherdreamConnection = INT_MAX;
@@ -46,14 +46,19 @@ void ofxEtherdream::setupByDacId(unsigned long dacIdEtherdream, bool bStartThrea
         
         device = etherdream_get(dacIdEtherdream);
         if (device == NULL) return 1;
-        ofLogNotice() << "ofxEtherdream::init - Connecting...";
-        if (etherdream_connect(device) < 0) return 1;
-        
-        ofLogNotice() << "ofxEtherdream::init - done with dac id : " << dacIdEtherdream;
-        state = ETHERDREAM_FOUND;
+        if (bConnect) {
+            ofLogNotice() << "ofxEtherdream::init - Connecting...";
+            
+            if (etherdream_connect(device) < 0) return 1;
+            
+            ofLogNotice() << "ofxEtherdream::init - done with dac id : " << dacIdEtherdream;
+            state = ETHERDREAM_FOUND;
+        } else {
+            state = ETHERDREAM_FOUND_DISCONNECTED;
+        }
     }
     
-    if(bStartThread) start();
+    if(bStartThread && bConnect) start();
 }
 
 void ofxEtherdream::resetup(bool bStartThread)
