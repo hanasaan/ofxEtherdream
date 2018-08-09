@@ -41,15 +41,15 @@ void ofxEtherdream::setupByDacId(unsigned long dacIdEtherdream, bool bStartThrea
         int device_num = etherdream_dac_count();
         if (!device_num) {
             ofLogWarning() << "ofxEtherdream::init - No DACs found";
-            return 0;
+            return;
         }
         
         device = etherdream_get(dacIdEtherdream);
-        if (device == NULL) return 1;
+        if (device == NULL) return;
         if (bConnect) {
             ofLogNotice() << "ofxEtherdream::init - Connecting...";
             
-            if (etherdream_connect(device) < 0) return 1;
+            if (etherdream_connect(device) < 0) return;
             
             ofLogNotice() << "ofxEtherdream::init - done with dac id : " << dacIdEtherdream;
             state = ETHERDREAM_FOUND;
@@ -66,7 +66,7 @@ void ofxEtherdream::resetup(bool bStartThread)
     if (device == NULL) {
         return;
     }
-    if (etherdream_connect(device) < 0) return 1;
+    if (etherdream_connect(device) < 0) return;
     
     ofLogNotice() << "ofxEtherdream::init - done with dac id : " << dacIdEtherdream;
     state = ETHERDREAM_FOUND;
@@ -109,7 +109,7 @@ void ofxEtherdream::init() {
     int device_num = etherdream_dac_count();
 	if (!device_num || idEtherdreamConnection>=device_num) {
 		ofLogWarning() << "ofxEtherdream::init - No DACs found";
-		return 0;
+		return;
 	}
     
     vector<unsigned long> dac_ids;
@@ -122,7 +122,7 @@ void ofxEtherdream::init() {
     device = etherdream_get(dac_ids[idEtherdreamConnection]);
     
     ofLogNotice() << "ofxEtherdream::init - Connecting...";
-    if (etherdream_connect(device) < 0) return 1;
+    if (etherdream_connect(device) < 0) return;
 
     ofLogNotice() << "ofxEtherdream::init - done with dac id : " << dac_ids[idEtherdreamConnection];
     
@@ -162,7 +162,7 @@ void ofxEtherdream::threadedFunction() {
 
 //--------------------------------------------------------------
 void ofxEtherdream::start() {
-    startThread(true, false);  // TODO: blocking or nonblocking?
+    startThread();  // TODO: blocking or nonblocking?
 }
 
 //--------------------------------------------------------------
@@ -264,6 +264,7 @@ string ofxEtherdream::getStateString() const
         case ETHERDREAM_FOUND_DISCONNECTED:
             return "Disconnected";
     }
+    return "Error";
 }
 
 
