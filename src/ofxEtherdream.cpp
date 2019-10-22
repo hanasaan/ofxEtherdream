@@ -22,7 +22,7 @@ void ofxEtherdream::setup(bool bStartThread, int idEtherdream) {
 }
 
 //--------------------------------------------------------------
-void ofxEtherdream::setupByDacId(unsigned long dacIdEtherdream, bool bStartThread, bool bConnect) {
+void ofxEtherdream::setupByDacId(unsigned long dacIdEtherdream, bool bStartThread, bool bConnect, int beforeSleepUsec) {
     
     bSetupByDacId = true;
     idEtherdreamConnection = INT_MAX;
@@ -35,7 +35,7 @@ void ofxEtherdream::setupByDacId(unsigned long dacIdEtherdream, bool bStartThrea
     
     /* Sleep for a bit over a second, to ensure that we see broadcasts
      * from all available DACs. */
-    usleep(1000000);
+    usleep(beforeSleepUsec);
 
     {
         int device_num = etherdream_dac_count();
